@@ -1,0 +1,27 @@
+{
+  "name": "mecab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "node-gyp": "^7.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild",
+    "configure": "node-gyp congifure",
+    "build": "node-gyp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hirokiky/node-mecab.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/hirokiky/node-mecab/issues"
+  },
+  "homepage": "https://github.com/hirokiky/node-mecab#readme"
+}
