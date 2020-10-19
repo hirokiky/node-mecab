@@ -54,7 +54,12 @@ void Tagger::Init(Local<Object> exports) {
 }
 
 void Tagger::New(const FunctionCallbackInfo<Value>& args) {
-  Tagger* tagger = new Tagger(MeCab::createTagger(""));
+  Isolate* isolate = args.GetIsolate();
+  v8::String::Utf8Value str(isolate, args[0]);
+  std::string cppStr(*str);
+  const char *str_char = ToCString(str);
+
+  Tagger* tagger = new Tagger(MeCab::createTagger(str_char));
   tagger->Wrap(args.This());
   args.GetReturnValue().Set(args.This());
 }
