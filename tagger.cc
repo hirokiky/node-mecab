@@ -71,7 +71,7 @@ void Tagger::Parse (const FunctionCallbackInfo<Value>& args) {
 
   v8::String::Utf8Value str(isolate, args[0]);
   std::string cppStr(*str);
-  const char *str_char = ToCString(str);
+  const char *str_char = tocstring(str);
   const char *result = tagger->tagger_->parse(str_char);
 
   args.GetReturnValue().Set(String::NewFromUtf8(isolate, result));
