@@ -11,12 +11,12 @@ class Tagger : public node::ObjectWrap {
     public:
         static void Init(v8::Local<v8::Object> exports);
     private:
-        explicit Tagger();
+        explicit Tagger(MeCab::Tagger *tagger);
         ~Tagger();
         static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         static void Parse(const v8::FunctionCallbackInfo<v8::Value>& args);
         static v8::Global<v8::Function> constructor;
-        MeCab::Tagger *tagger;
+        MeCab::Tagger *tagger_;
 };
 
 }  // namespace mecab

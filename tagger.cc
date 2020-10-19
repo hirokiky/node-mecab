@@ -16,8 +16,15 @@ using v8::ObjectTemplate;
 using v8::String;
 using v8::Value;
 
+const char* ToCString(const String::Utf8Value& value) {
+    return *value ? *value : "<string conversion failed>";
+}
+
+Tagger::Tagger(MeCab::Tagger *tagger) : tagger_(tagger) {
+}
+
 Tagger::~Tagger() {
-  delete tagger;
+  delete tagger_;
 }
 
 void Tagger::Init(Local<Object> exports) {
@@ -39,30 +46,30 @@ void Tagger::Init(Local<Object> exports) {
 
   Local<Function> constructor = tpl->GetFunction(context).ToLocalChecked();
   addon_data->SetInternalField(0, constructor);
-  exports->Set(context, String::NewFromUtf8(
-    isolate, "Tagger"),
-    constructor).FromJust();
+  exports->Set(
+    context,
+    String::NewFromUtf8(isolate, "Tagger"),
+    constructor
+  ).FromJust();
 }
 
 void Tagger::New(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
-  Local<Context> context = isolate->GetCurrentContext();
-
-  Tagger* obj = new Tagger(args[0]);
-  obj->Wrap(args.This());
-  obj->tagger = MeCab::createTagger();
-  args.GetReturnValue().Set(args.This(value));
+  Tagger* tagger = new Tagger(MeCab::createTagger(""));
+  tagger->Wrap(args.This());
+  args.GetReturnValue().Set(args.This());
 }
 
 void Tagger::Parse (const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
   Local<Context> context = isolate->GetCurrentContext();
+  Tagger* tagger = ObjectWrap::Unwrap<Tagger>(args.Holder());
 
-  Tagger* obj = ObjectWrap::Unwrap<Tagger>(args.Holder());
+  v8::String::Utf8Value str(isolate, args[0]);
+  std::string cppStr(*str);
+  const char *str_char = ToCString(str);
+  const char *result = tagger->tagger_->parse(str_char);
 
-  const char *result = obj->tagger->parse(args[0]->ToString(context));
-
-  args.GetReturnValue().Set(*result);
+  args.GetReturnValue().Set(String::NewFromUtf8(isolate, result));
 }
 
 }
